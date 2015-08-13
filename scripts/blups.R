@@ -131,7 +131,8 @@ tail(rils.t)
 
 # write table for backup
 setwd("/Users/Cody_2/Box Sync/Col_Sha_Paper/data")
-write.table(rils.t, file="col_sha_blups.csv", sep = ",")
+?write.table
+write.table(rils.t, file="col_sha_blups.csv", sep = ",", col.names = FALSE)
 
 
 
