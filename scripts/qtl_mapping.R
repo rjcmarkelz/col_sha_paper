@@ -66,6 +66,18 @@ setwd("/Users/Cody_2/Box Sync/Col_Sha_Paper/output")
 ggsave("area_1.pdf", area_1)
 
 
+lapply(list(df1,df2), function(x)
+
+lapply(list("value1","value2"), function(i) ggplot(x,aes_string(x=i,y="response"))+geom_point() )
+
+
+
+
+
+
+
+
+
 rils <- data.frame(RILs = "")
 for (trait in varlist) {
   rils <- merge(rils, data.frame(RILs=rownames(coef(models[[trait]])$genotype),                          
@@ -92,89 +104,26 @@ traitplot <- traitplot +  theme_bw() + geom_line(aes(x = pos, y = trait), size =
 traitplot
 }
 
+head(scanone.imp.all)
 
-# Make list of variable names to loop over.
-var_list = combn(names(iris)[1:3], 2, simplify=FALSE)
-var_list
-
-names(iris)[1:3]
-
-traitlist[1]
-# Make plots.
-plot_list = list()
-for (i in 1:3) {
-    p = ggplot(iris, aes_string(x=var_list[[i]][1], y=var_list[[i]][2])) +
-        geom_point(size=3, aes(colour=Species))
-    plot_list[[i]] = p
+for(i in traitlist){
+  peak <- max(scanone.imp.all$i)
+  plt <- ggplot(scanone.imp.all, aes_string(x = "pos", y = i)) +
+         geom_line(size = 2) + facet_grid(. ~ chr) +
+         theme_bw() + 
+         geom_segment(aes(x = pos, xend = pos), y = (peak * -0.02), yend = (peak * -0.05)) +
+         geom_hline(yintercept = 2.58, color = "red", size = 1) +
+         theme(text = element_text(size = 20)) +
+         xlab("Genetic Distance (cM)") +
+         ylab("LOD Score") +
+         ggtitle("LOD Curves for QTLs") 
+  # print(plt)
+  ggsave(sprintf("%s.pdf", i))
 }
 
 
-plot_list = list()
-for (i in traitlist) {
-    p = ggplot(scanone.imp.all) +
-        theme_bw() + geom_line(aes(x = scanone.imp.all$pos, y = i), size = 2) +
-                        geom_hline(yintercept = 2.58, color = "red", size = 1) +
-                        # geom_segment(aes(x = pos, xend = pos), y = (peak * -0.02), yend = (peak * -0.05)) +
-                        theme(text = element_text(size = 20)) +
-                        facet_grid(. ~ scanone.imp.all$chr) +
-                        xlab("Genetic Distance (cM)") +
-                        ylab("LOD Score") +
-                        ggtitle("LOD Curves for QTLs") 
-    plot_list[[i]] = p
-}
-plot_list
 
 
 
-doPlot = function(sel_name) {
-   dum <- df[df$name == sel_name,]
-   ggobj = ggplot(data = dum, aes(type, expenses)) + geom_bar()
-   print(ggobj)
-   ggsave(sprintf("%s.pdf", sel_name))
-}
-lapply(unique(df$name), doPlot)
-
-
-# Save plots to tiff. Makes a separate file for each plot.
-for (i in 1:3) {
-    file_name = paste("iris_plot_", i, ".tiff", sep="")
-    tiff(file_name)
-    print(plot_list[[i]])
-    dev.off()
-}
-
-# Another option: create pdf where each page is a separate plot.
-pdf("plots.pdf")
-for (i in 1:3) {
-    print(plot_list[[i]])
-}
-dev.off()
-
-plotHistFunc <- function(x) {
-  nm <- names(x)
-
-seq_along(traitlist)
-for (i in seq_along(traitlist)) {
-# peak <- max(scanone.imp.all$traitlist[i])
-plots <-ggplot(scanone.imp.all) + geom_line(aes(x = pos, y = i), size = 2) 
-                        # geom_hline(yintercept = 2.58, color = "red", size = 1) +
-                        # # geom_segment(aes(x = pos, xend = pos), y = (peak * -0.02), yend = (peak * -0.05)) +
-                        # theme(text = element_text(size = 20)) +
-                        # facet_grid(. ~ chr) +
-                        # xlab("Genetic Distance (cM)") +
-                        # ylab("LOD Score") +
-                        # ggtitle("LOD Curves for QTLs") 
-ggsave(plots,filename=paste(traitlist[i],".pdf",sep=""))
-}
-
-
-for (i in seq_along(traitlist)) {
-  print(ggplot(data=scanone.imp.all, aes(x = pos)) +
-    geom_line(aes(y = traitlist[i]), size = 2))
-}
- 
-plotHistFunc(df)
-
-?seq_along
 
 
