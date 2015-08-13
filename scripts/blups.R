@@ -76,6 +76,7 @@ colsha$perimeter_growth <- colsha$Perimeter_20131113 - colsha$Perimeter_20131108
 varlist <- names(colsha)[c(7:21,24:25)]
 varlist
 
+#apply same model for all traitsß
 models <- lapply(varlist, function(x) {
     lmer(substitute(i ~ (1|shelf) + (1|genotype), list(i = as.name(x))), 
                       data = colsha)
@@ -96,8 +97,7 @@ names(models) <- varlist
 
 #extract the blups!!!!
 #this works, but could be cleaned up
-#it first extracts random intercept (mean) of each RIL
-#it then extracts the random slope of the crowded treatment
+#it extracts random intercept (mean) of each RIL
 rils <- data.frame(RILs = "")
 for (trait in varlist) {
   rils <- merge(rils, data.frame(RILs=rownames(coef(models[[trait]])$genotype),                          
@@ -115,5 +115,23 @@ str(rils)
 
 head(rils)
 tail(rils)
+
+
+#format for RQTL
+rils.t <- as.data.frame(t(rils))
+head(rils.t)
+colnames(rils.t)
+dim(rils.t)
+rils.t[19,] <- rils.t[1,]
+rownames(rils.t)[19] <- "id"
+rownames(rils.t)
+rils.t <- rils.t[-1,]
+head(rils.t)
+tail(rils.t)
+
+# write table for backup
+setwd("/Users/Cody_2/Box Sync/Col_Sha_Paper/data")
+write.table(rils.t, file="col_sha_blups.csv", sep = ",")
+
 
 
