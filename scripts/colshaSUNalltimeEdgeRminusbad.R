@@ -8,7 +8,7 @@
 
 
 library(edgeR)
-
+4
 ##read in file
 allseq <- read.table("SAS_counts_merged_updated.bam.tsv", header = T)
 names(allseq)
