@@ -52,7 +52,7 @@ area_1 <- ggplot(scanone.imp.all)
 area_1
 area_1 <- area_1 +  theme_bw() + geom_line(aes(x = pos, y = Area_20131113), size = 2) +
                         geom_hline(yintercept = 2.58, color = "red", size = 1) +
-                        # geom_segment(aes(x = pos, xend = pos), y = (peak * -0.02), yend = (peak * -0.05)) +
+                        geom_segment(aes(x = pos, xend = pos), y = (peak * -0.02), yend = (peak * -0.05)) +
                         theme(text = element_text(size = 20)) +
                         facet_grid(. ~ chr) +
                         xlab("Genetic Distance (cM)") +
@@ -65,65 +65,23 @@ area_1
 setwd("/Users/Cody_2/Box Sync/Col_Sha_Paper/output")
 ggsave("area_1.pdf", area_1)
 
-
-lapply(list(df1,df2), function(x)
-
-lapply(list("value1","value2"), function(i) ggplot(x,aes_string(x=i,y="response"))+geom_point() )
-
-
-
-
-
-
-
-
-
-rils <- data.frame(RILs = "")
-for (trait in varlist) {
-  rils <- merge(rils, data.frame(RILs=rownames(coef(models[[trait]])$genotype),                          
-                                  placeholder=coef(models[[trait]])$genotype[,1]),
-                all.y = T)
-  colnames(rils)[length(colnames(rils))] <- trait
-}
-
-head(scanone.imp.all)
-traitlist <- names(scanone.imp.all)[c(3:19)]
-traitlist
-
-for (trait in traitlist) {
-peak <- max(scanone.imp.all$trait)
-traitplot <- ggplot(scanone.imp.all)
-traitplot <- traitplot +  theme_bw() + geom_line(aes(x = pos, y = trait), size = 2) +
-                        geom_hline(yintercept = 2.58, color = "red", size = 1) +
-                        geom_segment(aes(x = pos, xend = pos), y = (peak * -0.02), yend = (peak * -0.05)) +
-                        theme(text = element_text(size = 20)) +
-                        facet_grid(. ~ chr) +
-                        xlab("Genetic Distance (cM)") +
-                        ylab("LOD Score") +
-                        ggtitle("LOD Curves for QTLs") 
-traitplot
-}
-
-head(scanone.imp.all)
-
 for(i in traitlist){
-  peak <- max(scanone.imp.all$i)
   plt <- ggplot(scanone.imp.all, aes_string(x = "pos", y = i)) +
          geom_line(size = 2) + facet_grid(. ~ chr) +
          theme_bw() + 
-         geom_segment(aes(x = pos, xend = pos), y = (peak * -0.02), yend = (peak * -0.05)) +
+         geom_segment(aes(x = pos, xend = pos), y = (3.38 * -0.02), yend = (3.38 * -0.05)) +
          geom_hline(yintercept = 2.58, color = "red", size = 1) +
          theme(text = element_text(size = 20)) +
          xlab("Genetic Distance (cM)") +
          ylab("LOD Score") +
          ggtitle("LOD Curves for QTLs") 
   # print(plt)
-  ggsave(sprintf("%s.pdf", i))
+  ggsave(sprintf("%s.pdf", i), width = 12, height = 12)
 }
 
+head(scanone.imp.all)
 
 
-
-
+?ggsave
 
 
